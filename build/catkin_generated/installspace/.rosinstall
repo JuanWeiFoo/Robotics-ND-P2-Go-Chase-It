@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/foo0903/Indy500/my_robot/catkin_ws/install/setup.sh
