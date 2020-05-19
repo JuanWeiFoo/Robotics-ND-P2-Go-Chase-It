@@ -37,12 +37,12 @@ void process_image_callback(const sensor_msgs::Image image)
         {
             columns= i % step;
 
-            if (columns < step / 3)
-                drive_robot(0.5, 1);
-            else if (columns< (step/3 * 2))
-                drive_robot(0.5, 0);
+            if (columns < step * 0.333)
+                drive_robot(0.25, 1);
+            else if (columns< (step * 0.6667))
+                drive_robot(0.4, 0);
             else
-                drive_robot(0.5, -1);
+                drive_robot(0.25, -1);
             ball = true;
             break;
         }
