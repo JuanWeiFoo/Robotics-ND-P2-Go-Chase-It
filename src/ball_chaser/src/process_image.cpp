@@ -21,44 +21,36 @@ void drive_robot(float lin_x, float ang_z)
 }
 
 // This callback function continuously executes and reads the image data
-void process_image_callback(const sensor_msgs::Image img)
+void process_image_callback(const sensor_msgs::Image image)
 {
+    // Initialize white dots
+   int white_colour = 255;
+   bool ball = false;
+   int columns = 0;
+   int height = image.height;
+   int step = image.step;
 
-    int white_pixel = 255;
 
-    int height = img.height;
-    int step = img.step;
-    float x = 0.0;
-    float z = 0.0;
-    float offset_accumulated = 0;
-    int count_total = 0;
+    for (int i=0; i < height * step; i += 3)
+    {
+        if ((image.data[i] == white_colour) && (image.data[i+1] == white_colour) && (image.data[i+2] == white_colour))
+        {
+            columns= i % step;
 
-    for (int i = 0; i < height ; i++) {
-        for (int j = 0; j < step; j++) {
-            if (img.data[i * step + j] == white_pixel) {
-                // vec_cout[j]++;
-                offset_accumulated += j - step / 2.0;
-                count_total++;
-            }
+            if (columns < step / 3)
+                drive_robot(0.5, 1);
+            else if (columns< (step/3 * 2))
+                drive_robot(0.5, 0);
+            else
+                drive_robot(0.5, -1);
+            ball = true;
+            break;
         }
-    }
 
-    if (count_total == 0) {
-        x = 0.0;
-        z = 0.0;
     }
-    else {
-        x = 0.1;
-        // z = 0.5 * (step / 2.0 - idx_center_ball);
-
-        // Calculate the average offset (from -step/2.0 to +step/2.0)
-        // Normalize the average offset (from -1.0 to 1.0)
-        // Multiply with magic number -4.0 to turn
-        z = -4.0 * offset_accumulated / count_total / (step /2.0);
+    if (ball == false){
+    drive_robot(0,0);
     }
-    
-    // Send request to service
-    drive_robot(x, z);
 }
 
 int main(int argc, char** argv)
@@ -68,7 +60,7 @@ int main(int argc, char** argv)
     ros::NodeHandle n;
 
     // Define a client service capable of requesting services from command_robot
-    client = n.serviceClient<ball_chaser::DriveToTarget>("/ball_chaser/command_robot");
+    client = n.serviceClient<ball_chaser::DriveToTarget>("/ball_chaser/drive_bot");
 
     // Subscribe to /camera/rgb/image_raw topic to read the image data inside the process_image_callback function
     ros::Subscriber sub1 = n.subscribe("/camera/rgb/image_raw", 10, process_image_callback);
