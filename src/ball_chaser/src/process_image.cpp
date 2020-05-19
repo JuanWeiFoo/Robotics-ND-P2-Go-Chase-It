@@ -24,23 +24,27 @@ void drive_robot(float lin_x, float ang_z)
 void process_image_callback(const sensor_msgs::Image image)
 {
     // Initialize white dots
-   int white_colour = 255;
+   int white_dots = 255;
    bool ball = false;
    int columns = 0;
    int height = image.height;
    int step = image.step;
 
 
-    for (int i=0; i < height * step; i += 3)
+    for (int i=0; i < height * step; i = i + 3)
     {
-        if ((image.data[i] == white_colour) && (image.data[i+1] == white_colour) && (image.data[i+2] == white_colour))
+        if ((image.data[i] == white_dots) && (image.data[i+1] == white_dots) && (image.data[i+2] == white_dots))
         {
             columns= i % step;
 
+            // if ball is on the left
             if (columns < step * 0.333)
                 drive_robot(0.25, 1);
+            // if ball is at the center
             else if (columns< (step * 0.6667))
                 drive_robot(0.4, 0);
+
+            // if ball is on the right
             else
                 drive_robot(0.25, -1);
             ball = true;
@@ -48,6 +52,7 @@ void process_image_callback(const sensor_msgs::Image image)
         }
 
     }
+    // if cannot see the ball, stop driving
     if (ball == false){
     drive_robot(0,0);
     }
