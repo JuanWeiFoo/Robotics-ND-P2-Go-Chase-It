@@ -14,8 +14,8 @@ this file launches gazebo, rviz and spawns the robot in the world.
 
 
 
-## Setup 
-First, Install Gazebo and ROS in Linux.
+## Setup and Launch Files
+1.First, Install Gazebo and ROS in Linux.
 
 To install ROS:
 http://wiki.ros.org/melodic/Installation
@@ -23,15 +23,35 @@ http://wiki.ros.org/melodic/Installation
 To install Gazebo:
 http://gazebosim.org/tutorials?tut=ros_installing&cat=connect_ros
 
-### Launch files 
-1. Create a catkin workspace and initialize workspace  
+
+2. Create a catkin workspace and initialize workspace  
 ```
- $ mkdir -o catkin_ws/src  `
+ $ mkdir -p catkin_ws/src  `
  $ cd catkin_ws/src  `
  $ catkin_init_workspace`
 ```
-2. Download git repository and make catkin package  
+3. Download git repository and make catkin package  
 ```
 $ git clone https://github.com/JuanWeiFoo/Robotics-ND-P2-Go-Chase-It.git
+$ cd ..
 $ catkin_make
 ```
+4. To launch gazebo with robot in it
+```
+$ source devel/setup.bash
+$ roslaunch my_robot world.launch
+```
+5.(a) To launch drive_bot algorithm (*open another terminal*)  
+```
+$ cd catkin_ws
+$ source devel/setup.bash
+$ rosrun ball_chaser drive_bot
+```
+5.(b) To launch process_image algorithm (*open another terminal*) 
+```
+$ cd catkin_ws
+$ source devel/setup.bash
+$ roslaunch ball_chaser ball_chaser.launch
+```
+
+
